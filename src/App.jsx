@@ -29,10 +29,6 @@ function App() {
     setDataItems([...dataItems, newItem]);
   };
 
-  const clearDataItems = () => {
-    setDataItems([]);
-  }
-
   const deleteByIndex = (index) => {
     let newDataItems = [...dataItems];
     newDataItems.splice(index, 1);
@@ -84,7 +80,6 @@ function App() {
         <Col md={8}>
           <QuotationTable
             data={dataItems}
-            clearDataItems={clearDataItems}
             deleteByIndex={deleteByIndex} />
         </Col>
       </Row>
