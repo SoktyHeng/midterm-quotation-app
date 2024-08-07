@@ -19,7 +19,7 @@ function App() {
 
   const addItem = () => {
     let item = products.find((v) => itemRef.current.value === v.code)
-    
+
     const newItem = {
       item: item.name,
       ppu: ppuRef.current.value,
@@ -31,6 +31,12 @@ function App() {
 
   const clearDataItems = () => {
     setDataItems([]);
+  }
+
+  const deleteByIndex = (index) => {
+    let newDataItems = [...dataItems];
+    newDataItems.splice(index, 1);
+    setDataItems(newDataItems);
   }
 
   const productChange = () => {
@@ -76,7 +82,10 @@ function App() {
           </div>
         </Col>
         <Col md={8}>
-          <QuotationTable data={dataItems} clearDataItems={clearDataItems} />
+          <QuotationTable
+            data={dataItems}
+            clearDataItems={clearDataItems}
+            deleteByIndex={deleteByIndex} />
         </Col>
       </Row>
     </Container>

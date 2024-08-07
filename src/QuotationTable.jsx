@@ -5,10 +5,11 @@ More icons at https://react-icons.github.io/react-icons/
 import { Container, Button, Table } from "react-bootstrap";
 import { CiShoppingCart } from "react-icons/ci";
 import { MdClear } from "react-icons/md";
+import { BsFillTrashFill } from "react-icons/bs";
 
 import style from "./mystyle.module.css";
 
-function QuotationTable({ data, clearDataItems }) {
+function QuotationTable({ data, clearDataItems, deleteByIndex }) {
 
   // Guard condition
   if (!data || data.length === 0) {
@@ -26,6 +27,10 @@ function QuotationTable({ data, clearDataItems }) {
     clearDataItems();
   };
 
+  const handleDelete = (index) => {
+    deleteByIndex(index)
+  }
+
   return (
     <Container>
       <h1>Quotation</h1>
@@ -35,6 +40,7 @@ function QuotationTable({ data, clearDataItems }) {
       <Table striped bordered hover>
         <thead>
           <tr>
+            <th className={style.textCenter}>-</th>
             <th className={style.textCenter}>Qty</th>
             <th className={style.textCenter}>Item</th>
             <th className={style.textCenter}>Price/Unit</th>
@@ -46,6 +52,7 @@ function QuotationTable({ data, clearDataItems }) {
             let amount = v.qty * v.ppu;
             return (
               <tr key={i}>
+                <td className={style.textCenter}><BsFillTrashFill onClick={() => handleDelete(i)} /></td>
                 <td className={style.textCenter}>{v.qty}</td>
                 <td>{v.item}</td>
                 <td className={style.textCenter}>{v.ppu}</td>
