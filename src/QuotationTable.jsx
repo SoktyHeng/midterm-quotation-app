@@ -1,7 +1,3 @@
-/*
-More icons at https://react-icons.github.io/react-icons/
-*/
-
 import { Container, Button, Table } from "react-bootstrap";
 import { CiShoppingCart } from "react-icons/ci";
 import { MdClear } from "react-icons/md";
@@ -9,9 +5,8 @@ import { BsFillTrashFill } from "react-icons/bs";
 
 import style from "./mystyle.module.css";
 
-function QuotationTable({ data, deleteByIndex }) {
+function QuotationTable({ data, clearDataItems, deleteByIndex }) {
 
-  // Guard condition
   if (!data || data.length === 0) {
     return (
       <Container>
@@ -21,16 +16,22 @@ function QuotationTable({ data, deleteByIndex }) {
     );
   }
 
-  const total = data.reduce((acc, v) => acc + v.qty * v.ppu, 0);
+  const total = data.reduce((acc, v) => acc + (v.qty * v.ppu), 0);
+  const totalDiscount = data.reduce((acc, v) => acc + v.discount, 0); 
+  const totalAfterDiscount = data.reduce((acc, v) => acc + (v.qty * v.ppu - v.discount), 0); 
+
+  const clearTable = () => {
+    clearDataItems();
+  };
 
   const handleDelete = (index) => {
-    deleteByIndex(index)
-  }
+    deleteByIndex(index);
+  };
 
   return (
     <Container>
       <h1>Quotation</h1>
-      <Button variant="outline-dark">
+      <Button onClick={clearTable} variant="outline-dark">
         <MdClear /> Clear
       </Button>
       <Table striped bordered hover>
@@ -40,29 +41,43 @@ function QuotationTable({ data, deleteByIndex }) {
             <th className={style.textCenter}>Qty</th>
             <th className={style.textCenter}>Item</th>
             <th className={style.textCenter}>Price/Unit</th>
+            <th className={style.textCenter}>Discount</th>
             <th className={style.textCenter}>Amount</th>
+            <th className={style.textCenter}>Amount After Discount</th>
           </tr>
         </thead>
-        <tbody>{
-          data.map((v, i) => {
-            let amount = v.qty * v.ppu;
-            return (
-              <tr key={i}>
-                <td className={style.textCenter}><BsFillTrashFill onClick={() => handleDelete(i)} /></td>
-                <td className={style.textCenter}>{v.qty}</td>
-                <td>{v.item}</td>
-                <td className={style.textCenter}>{v.ppu}</td>
-                <td className={style.textRight}>{amount}</td>
-              </tr>
-            );
-          })
-        }</tbody>
+        <tbody>
+          {
+            data.map((v, i) => {
+              const amount = v.qty * v.ppu;
+              const discountedAmount = amount - v.discount;
+              return (
+                <tr key={i}>
+                  <td className={style.textCenter}><BsFillTrashFill onClick={() => handleDelete(i)} /></td>
+                  <td className={style.textCenter}>{v.qty}</td>
+                  <td>{v.item}</td>
+                  <td className={style.textCenter}>{v.ppu}</td>
+                  <td className={style.textCenter}>{v.discount}</td>
+                  <td className={style.textRight}>{amount}</td>
+                  <td className={style.textRight}>{discountedAmount}</td>
+                </tr>
+              );
+            })
+          }
+        </tbody>
         <tfoot>
           <tr>
-            <td colSpan={3} className={style.textRight}>
+            <td colSpan={5} className={style.textRight}>
               Total
             </td>
             <td className={style.textRight}>{total}</td>
+            <td className={style.textRight}>{totalAfterDiscount}</td>
+          </tr>
+          <tr>
+            <td colSpan={5} className={style.textRight}>
+              Total Discount
+            </td>
+            <td colSpan={2} className={style.textRight}>{totalDiscount}</td>
           </tr>
         </tfoot>
       </Table>
